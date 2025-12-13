@@ -1,0 +1,16 @@
+image: python:3.12
+
+stages:
+  - deploy
+
+variables:
+  GIT_STRATEGY: clone
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Deploying FreeCoinBase static site..."
+    - pip install fastapi uvicorn
+    - echo "Run locally with: uvicorn main:app --reload"
+  only:
+    - main
