@@ -1,25 +1,26 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-import sqlite3, os
+import sqlite3
 
+# ---------------- APP ----------------
 app = FastAPI()
 
-
+# ---------------- STATIC & TEMPLATES ----------------
 app.mount("/static", StaticFiles(directory="domashna3/static"), name="static")
 templates = Jinja2Templates(directory="domashna3/templates")
 
+# ---------------- DATABASE ----------------
+DB_PATH = r"C:\Users\Marija\PycharmProjects\DASallinone\domashna1\crypto.db"
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, "../domashna1/crypto.db")
-
-def get_connection():
-    return sqlite3.connect(DB_PATH)
-
+# ---------------- ROUTES ----------------
 
 @app.get("/")
 def home(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request}
+    )
 
 
 @app.get("/cryptos")
@@ -27,22 +28,12 @@ def show_cryptos(request: Request, filter_id: str = None, page: int = 1):
     limit = 20
     offset = (page - 1) * limit
 
-    conn = get_connection()
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='coins';")
-    if not cursor.fetchone():
-        return templates.TemplateResponse("cryptos.html", {
-            "request": request,
-            "cryptos": [],
-            "all_cryptos": [],
-            "selected": None,
-            "page": 1,
-            "total_pages": 1,
-            "error": "Табелата 'coins' не постои во базата."
-        })
-
-    cursor.execute("SELECT id, name FROM coins ORDER BY market_cap_rank LIMIT 200")
+    cursor.execute(
+        "SELECT id, name FROM coins ORDER BY market_cap_rank LIMIT 200"
+    )
     all_cryptos = cursor.fetchall()
 
     if filter_id:
@@ -58,34 +49,40 @@ def show_cryptos(request: Request, filter_id: str = None, page: int = 1):
         total = cursor.fetchone()[0]
         total_pages = (total // limit) + (1 if total % limit else 0)
 
-        cursor.execute(f"""
+        cursor.execute("""
             SELECT id, symbol, name, market_cap, market_cap_rank
             FROM coins
             ORDER BY market_cap_rank
-            LIMIT {limit} OFFSET {offset}
-        """)
+            LIMIT ? OFFSET ?
+        """, (limit, offset))
         rows = cursor.fetchall()
 
     conn.close()
 
-    return templates.TemplateResponse("cryptos.html", {
-        "request": request,
-        "cryptos": rows,
-        "all_cryptos": all_cryptos,
-        "selected": filter_id,
-        "page": page,
-        "total_pages": total_pages
-    })
+    return templates.TemplateResponse(
+        "cryptos.html",
+        {
+            "request": request,
+            "cryptos": rows,
+            "all_cryptos": all_cryptos,
+            "selected": filter_id,
+            "page": page,
+            "total_pages": total_pages
+        }
+    )
 
 
 @app.get("/za-nas")
 def about(request: Request):
-    return templates.TemplateResponse("about.html", {"request": request})
+    return templates.TemplateResponse(
+        "about.html",
+        {"request": request}
+    )
 
 
 @app.get("/grafici")
 def show_graphs(request: Request):
-    conn = get_connection()
+    conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -101,8 +98,32 @@ def show_graphs(request: Request):
     names = [row[0] for row in data]
     caps = [row[1] for row in data]
 
-    return templates.TemplateResponse("grafici.html", {
-        "request": request,
-        "names": names,
-        "caps": caps
-    })
+    return templates.TemplateResponse(
+        "grafici.html",
+        {
+            "request": request,
+            "names": names,
+            "caps": caps
+        }
+    )
+
+
+@app.get("/lstm")
+def lstm(request: Request):
+    dates = ["2025-01-01", "2025-01-02", "2025-01-03", "2025-01-04", "2025-01-05"]
+    true_prices = [30000, 30500, 31000, 30800, 31500]
+    predicted_prices = [29950, 30600, 30950, 30750, 31400]
+
+    return templates.TemplateResponse(
+        "lstm.html",
+        {
+            "request": request,
+            "dates": dates,
+            "true_prices": true_prices,
+            "predicted_prices": predicted_prices
+        }
+    )
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

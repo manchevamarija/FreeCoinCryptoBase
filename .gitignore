@@ -6,7 +6,10 @@
 __pycache__/
 *.pyc
 
-
 # OS files
 .DS_Store
 Thumbs.db
+
+#*.db
+#domashna3/
+
