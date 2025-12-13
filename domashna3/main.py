@@ -3,12 +3,17 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 import sqlite3
 
+
+
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="domashna3/static"), name="static")
 templates = Jinja2Templates(directory="domashna3/templates")
 
 DB_PATH = r"C:\Users\Marija\PycharmProjects\DASallinone\domashna1\crypto.db"
+
+
+
 
 @app.get("/")
 def home(request: Request):
