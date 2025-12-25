@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Стратегиска анализа | FreeCoinBase</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #111;
+}
+
+header.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 2rem;
+  border-bottom: 1px solid #ddd;
+  z-index: 1000;
+}
+
+header.navbar .logo {
+  font-weight: 700;
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+  color: #000;
+}
+
+header.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+
+header.navbar nav a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+header.navbar nav a:hover {
+  color: #555;
+}
+
+.home-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.analysis-section {
+  padding: 8rem 2rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.analysis-section h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.analysis-section p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+.select-box {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+select {
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.card h3 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.card p {
+  margin-top: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+footer {
+  background: #f5f5f5;
+  padding: 3rem 1rem;
+  margin-top: 3rem;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+.footer-logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0b592a;
+  margin-bottom: 1rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #0b592a;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.footer-links a:hover {
+  color: #063a1b;
+}
+
+canvas {
+  max-width: 100%;
+  margin-top: 1rem;
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="logo">FreeCoinBase</div>
+  <nav>
+    <a href="/cryptos">База</a>
+    <a href="/za-nas">За Нас</a>
+    <a href="/grafici">Графици</a>
+    <a href="/lstm">LSTM анализа</a>
+    <a href="/analysis-view">Стратегиска анализа</a>
+    <a href="/"><img src="/static/img/home-icon.png" class="home-icon">Почетна</a>
+  </nav>
+</header>
+
+<section class="analysis-section">
+  <h1>Стратегиска анализа на криптовалути</h1>
+  <p>Приказ на технички индикатори користејќи Strategy design pattern (SMA, RSI, MACD).</p>
+
+  <div class="select-box">
+    <select id="viewSelect">
+      <option value="ALL">Сите индикатори</option>
+      <option value="SMA">Price + SMA</option>
+      <option value="RSI">RSI</option>
+      <option value="MACD">MACD</option>
+    </select>
+  </div>
+
+  <div class="card" id="cardSMA">
+    <h3>Цена + SMA (5)</h3>
+    <canvas id="priceChart"></canvas>
+  </div>
+
+  <div class="card" id="cardRSI">
+    <h3>RSI (Relative Strength Index)</h3>
+    <p>Overbought ≈ 70, Oversold ≈ 30</p>
+    <canvas id="rsiChart"></canvas>
+  </div>
+
+  <div class="card" id="cardMACD">
+    <h3>MACD (12, 26, 9)</h3>
+    <canvas id="macdChart"></canvas>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">FreeCoinBase</div>
+  <div class="footer-links">
+    <a href="/">Почетна</a>
+    <a href="/cryptos">База</a>
+    <a href="/grafici">Графици</a>
+    <a href="/za-nas">За Нас</a>
+    <a href="/lstm">LSTM анализа</a>
+    <a href="/analysis-view">Стратегиска анализа</a>
+  </div>
+  <p style="margin-top:1rem;font-size:0.9rem;color:#555;">
+    © 2025 FreeCoinBase — All rights reserved.
+  </p>
+</footer>
+
+<script>
+const labels = {{ labels | tojson }};
+const prices = {{ prices | tojson }};
+const sma5 = {{ sma5 | tojson }};
+const rsi5 = {{ rsi5 | tojson }};
+const macd = {{ macd | tojson }};
+const signal = {{ signal | tojson }};
+const hist = {{ hist | tojson }};
+
+const priceChart = new Chart(document.getElementById("priceChart"), {
+  type: "line",
+  data: {
+    labels,
+    datasets: [
+      { label: "Цена", data: prices, tension: 0.3 },
+      { label: "SMA(5)", data: sma5, spanGaps: true, tension: 0.3 }
+    ]
+  }
+});
+
+const rsiChart = new Chart(document.getElementById("rsiChart"), {
+  type: "line",
+  data: {
+    labels,
+    datasets: [
+      { label: "RSI", data: rsi5, spanGaps: true, tension: 0.3 },
+      { label: "70", data: labels.map(() => 70), borderDash: [6,6], pointRadius: 0 },
+      { label: "30", data: labels.map(() => 30), borderDash: [6,6], pointRadius: 0 }
+    ]
+  },
+  options: { scales: { y: { min: 0, max: 100 } } }
+});
+
+const macdChart = new Chart(document.getElementById("macdChart"), {
+  data: {
+    labels,
+    datasets: [
+      { type: "line", label: "MACD", data: macd, spanGaps: true },
+      { type: "line", label: "Signal", data: signal, spanGaps: true },
+      { type: "bar", label: "Histogram", data: hist }
+    ]
+  }
+});
+
+const cardSMA = document.getElementById("cardSMA");
+const cardRSI = document.getElementById("cardRSI");
+const cardMACD = document.getElementById("cardMACD");
+
+document.getElementById("viewSelect").addEventListener("change", e => {
+  const v = e.target.value;
+  cardSMA.style.display = v === "ALL" || v === "SMA" ? "" : "none";
+  cardRSI.style.display = v === "ALL" || v === "RSI" ? "" : "none";
+  cardMACD.style.display = v === "ALL" || v === "MACD" ? "" : "none";
+});
+</script>
+
+</body>
+</html>

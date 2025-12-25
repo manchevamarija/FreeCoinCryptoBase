@@ -1,0 +1,3 @@
+from domashna4.strategy_pattern.rsi_strategy import RSIStrategy
+from domashna4.strategy_pattern.sma_strategy import SMAStrategy
+from domashna4.strategy_pattern.macd_strategy import MACDStrategy
