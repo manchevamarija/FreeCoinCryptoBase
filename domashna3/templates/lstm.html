@@ -3,26 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LSTM Прогноза | FreeCoinBase</title>
+<title>LSTM анализа | FreeCoinBase</title>
 <link rel="stylesheet" href="/static/css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
-body { font-family: "Poppins", sans-serif; margin:0; padding:0; background:#fff; color:#111; }
-header.navbar { position: fixed; top:0; width:100%; background:#fff; display:flex; justify-content:space-between; align-items:center; padding:18px 0; border-bottom:1px solid #ddd; z-index:1000; }
-header.navbar .logo { font-weight:700; font-size:1.4rem; letter-spacing:0.5px; color:#000; }
+body { font-family:"Poppins",sans-serif;margin:0;padding:0;color:#222;background:#fff; }
+header.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  z-index: 1000;
+}
+
+header.navbar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header.navbar .logo {
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #000;
+  white-space: nowrap;
+}
+
 header.navbar nav {
   display: flex;
   align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
+  gap: 28px;
 }
-header.navbar nav a { color:#000; text-decoration:none; font-weight:500; transition:0.3s; display:flex; align-items:center; gap:5px; }
-header.navbar nav a.active { color:#0b592a; font-weight:600; }
-header.navbar nav a:hover { color:#555; }
-.home-icon { width:20px; height:20px; vertical-align:middle; margin-right:3px; }
-.lstm-section { padding:8rem 2rem 4rem; max-width:1000px; margin:0 auto; text-align:center; }
-.lstm-section h1 { font-size:2rem; margin-bottom:1rem; }
-canvas { margin-top:2rem; max-width:100%; }
+
+header.navbar nav a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+header.navbar nav a:hover {
+  color: #555;
+}
+
+.home-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+
+.section{padding:8rem 2rem 4rem;max-width:1000px;margin:0 auto;text-align:center;}
+.section h1{font-size:2rem;margin-bottom:1rem;}
+
+canvas{margin-top:2rem;max-width:100%;}
+.lstm-section {
+  padding: 8rem 2rem 4rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.lstm-title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  margin-bottom: 1rem;
+}
+
+.lstm-subtitle {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.8px;
+  color: #444;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+}
 footer { background:#f5f5f5; padding:3rem 1rem; margin-top:3rem; border-top:1px solid #ddd; text-align:center; }
 .footer-logo { font-size:1.6rem; font-weight:700; color:#0b592a; margin-bottom:1rem; }
 .footer-links { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; }
@@ -30,25 +91,30 @@ footer { background:#f5f5f5; padding:3rem 1rem; margin-top:3rem; border-top:1px 
 .footer-links a:hover { color:#063a1b; }
 </style>
 </head>
+
 <body>
 
 <header class="navbar">
-  <div class="logo">FreeCoinBase</div>
-  <nav>
-    <a href="/cryptos">База</a>
-    <a href="/za-nas">За Нас</a>
-    <a href="/grafici">Графици</a>
-              <a href="/lstm">LSTM анализа </a>
-                      <a href="/analysis-view">Стратегиска анализа </a>
-
-  <a href="/"><img src="/static/img/home-icon.png" alt="Home" class="home-icon">Почетна</a>
-
-  </nav>
+<div class="logo">FreeCoinBase</div>
+<nav>
+<a href="/cryptos">База</a>
+<a href="/za-nas">За Нас</a>
+<a href="/grafici">Графици</a>
+<a href="/lstm">LSTM анализа</a>
+<a href="/sentiment">Sentiment анализа</a>
+<a href="/on-chain">On-Chain Data</a>
+<a href="/tech-analysis">Техничка анализа</a>
+<a href="/analysis-view">Стратегиска анализа</a>
+<a href="/"><img src="/static/img/home-icon.png" class="home-icon">Почетна</a>
+</nav>
 </header>
 
+
 <section class="lstm-section">
-  <h1>LSTM Прогноза за BTC-USD</h1>
-  <p>График кој ја прикажува вистинската цена и предвидената цена од LSTM моделот.</p>
+  <h1 class="lstm-title">LSTM ПРОГНОЗА ЗА BTC-USD</h1>
+  <p class="lstm-subtitle">
+    ГРАФИК КОЈ ЈА ПРИКАЖУВА ВИСТИНСКАТА И ПРЕДВИДЕНАТА ЦЕНА ОД LSTM МОДЕЛОТ
+  </p>
   <canvas id="lstmChart" width="900" height="400"></canvas>
 </section>
 
@@ -114,10 +180,14 @@ const lstmChart = new Chart(ctx, {
   <div class="footer-links">
     <a href="/">Почетна</a>
     <a href="/cryptos">База</a>
-    <a href="/grafici">Графици</a>
     <a href="/za-nas">За Нас</a>
-            <a href="/lstm">LSTM анализа </a>
+    <a href="/grafici">Графици</a>
+         <a href="/lstm">LSTM анализа </a>
+            <a href="/sentiment" >Sentiment анализа</a>
+                <a href="/on-chain">On-Chain Data</a>
+    <a href="/tech-analysis">Tехничка анализа</a>
                       <a href="/analysis-view">Стратегиска анализа </a>
+
 
 
   </div>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sentiment анализа | FreeCoinBase</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #111;
+
+  display: flex;
+  flex-direction: column;
+}
+.page-content {
+  flex: 1;
+  padding-top: 90px;
+}
+
+
+header.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+  z-index: 1000;
+}
+
+header.navbar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header.navbar .logo {
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: #000;
+  white-space: nowrap;
+}
+
+header.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+header.navbar nav a {
+  color: #000;
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+  white-space: nowrap;
+}
+
+header.navbar nav a:hover {
+  color: #555;
+}
+
+.home-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+.onchain-section { padding:8rem 2rem 4rem; max-width:1000px; margin:0 auto; text-align:center; }
+.onchain-section h1 { font-size:2rem; margin-bottom:1rem; }
+table { margin-top:2rem; max-width:100%; border-collapse: collapse; width:100%; }
+table th, table td { border:1px solid #ddd; padding:10px; text-align:center; }
+table th { background:#0b592a; color:#fff; }
+table tr:nth-child(even) { background:#f9f9f9; }
+footer { background:#f5f5f5; padding:3rem 1rem; margin-top:3rem; border-top:1px solid #ddd; text-align:center; }
+.footer-logo { font-size:1.6rem; font-weight:700; color:#0b592a; margin-bottom:1rem; }
+.footer-links { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; }
+.footer-links a { text-decoration:none; color:#0b592a; font-weight:500; transition:0.2s; }
+.footer-links a:hover { color:#063a1b; }
+</style>
+</head>
+<body>
+
+
+<header class="navbar">
+<div class="logo">FreeCoinBase</div>
+<nav>
+<a href="/cryptos">База</a>
+<a href="/za-nas">За Нас</a>
+<a href="/grafici">Графици</a>
+<a href="/lstm">LSTM анализа</a>
+<a href="/sentiment">Sentiment анализа</a>
+<a href="/on-chain">On-Chain Data</a>
+<a href="/tech-analysis">Техничка анализа</a>
+<a href="/analysis-view">Стратегиска анализа</a>
+<a href="/"><img src="/static/img/home-icon.png" class="home-icon">Почетна</a>
+</nav>
+</header>
+
+<main class="page-content">
+<section class="onchain-section">
+  <h1>On-Chain Податоци за Wallet</h1>
+  <p>Преглед на токени, салда и последни трансакции на даден wallet.</p>
+
+  <div style="margin-top:2rem;">
+      <label for="walletAddress" style="font-weight:500;">Wallet Address</label>
+      <input type="text" id="walletAddress" placeholder="Внесете wallet адреса" style="padding:8px; width:300px; margin-left:10px;">
+      <button id="fetchData" style="padding:8px 12px; background:#0b592a; color:#fff; border:none; margin-left:10px; cursor:pointer;">Fetch Data</button>
+  </div>
+
+  <table id="onchainTable">
+      <thead>
+          <tr>
+              <th>Token</th>
+              <th>Balance</th>
+              <th>Last Transaction</th>
+              <th>Transaction Count</th>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+  </table>
+</section>
+</main>
+<footer>
+  <div class="footer-logo">FreeCoinBase</div>
+  <div class="footer-links">
+  <a href="/">Почетна</a>
+       <a href="/cryptos">База</a>
+    <a href="/za-nas">За Нас</a>
+    <a href="/grafici">Графици</a>
+         <a href="/lstm">LSTM анализа </a>
+            <a href="/sentiment" >Sentiment анализа</a>
+                <a href="/on-chain">On-Chain Data</a>
+    <a href="/tech-analysis">Tехничка анализа</a>
+                      <a href="/analysis-view">Стратегиска анализа </a>
+  </div>
+  <p style="margin-top:1rem;font-size:0.9rem;color:#555;">© 2025 FreeCoinBase — All rights reserved.</p>
+</footer>
+
+<script>
+document.getElementById('fetchData').addEventListener('click', async () => {
+    const address = document.getElementById('walletAddress').value;
+    if (!address) return alert('Внесете wallet адреса');
+
+    const data = [
+        { token: 'ETH', balance: '1.234', lastTx: '2025-12-30 10:00', txCount: 5 },
+        { token: 'USDT', balance: '1000', lastTx: '2025-12-29 18:22', txCount: 12 }
+    ];
+
+    const tbody = document.querySelector('#onchainTable tbody');
+    tbody.innerHTML = '';
+
+    data.forEach(d => {
+        const row = `<tr>
+            <td>${d.token}</td>
+            <td>${d.balance}</td>
+            <td>${d.lastTx}</td>
+            <td>${d.txCount}</td>
+        </tr>`;
+        tbody.insertAdjacentHTML('beforeend', row);
+    });
+});
+</script>
+
+</body>
+</html>

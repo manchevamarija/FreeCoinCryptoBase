@@ -22,37 +22,38 @@ header.navbar {
   top: 0;
   width: 100%;
   background: #fff;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px 2rem;
   border-bottom: 1px solid #ddd;
   z-index: 1000;
+}
+
+header.navbar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 header.navbar .logo {
   font-weight: 700;
   font-size: 1.4rem;
-  letter-spacing: 0.5px;
   color: #000;
+  white-space: nowrap;
 }
 
 header.navbar nav {
   display: flex;
   align-items: center;
-  gap: 24px;
-  flex-wrap: wrap;
+  gap: 28px;
 }
-
 
 header.navbar nav a {
   color: #000;
   text-decoration: none;
   font-weight: 500;
   transition: 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  white-space: nowrap;
 }
 
 header.navbar nav a:hover {
@@ -60,8 +61,9 @@ header.navbar nav a:hover {
 }
 
 .home-icon {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
 }
 
 .analysis-section {
@@ -162,8 +164,11 @@ canvas {
     <a href="/cryptos">База</a>
     <a href="/za-nas">За Нас</a>
     <a href="/grafici">Графици</a>
-    <a href="/lstm">LSTM анализа</a>
-    <a href="/analysis-view">Стратегиска анализа</a>
+         <a href="/lstm">LSTM анализа </a>
+            <a href="/sentiment" >Sentiment анализа</a>
+                <a href="/on-chain" class="active">On-Chain Data</a>
+    <a href="/tech-analysis" class="active">Tехничка анализа</a>
+                      <a href="/analysis-view">Стратегиска анализа </a>
     <a href="/"><img src="/static/img/home-icon.png" class="home-icon">Почетна</a>
   </nav>
 </header>
@@ -203,10 +208,13 @@ canvas {
   <div class="footer-links">
     <a href="/">Почетна</a>
     <a href="/cryptos">База</a>
-    <a href="/grafici">Графици</a>
     <a href="/za-nas">За Нас</a>
-    <a href="/lstm">LSTM анализа</a>
-    <a href="/analysis-view">Стратегиска анализа</a>
+    <a href="/grafici">Графици</a>
+         <a href="/lstm">LSTM анализа </a>
+            <a href="/sentiment" >Sentiment анализа</a>
+                <a href="/on-chain" class="active">On-Chain Data</a>
+    <a href="/tech-analysis" class="active">Tехничка анализа</a>
+                      <a href="/analysis-view">Стратегиска анализа </a>
   </div>
   <p style="margin-top:1rem;font-size:0.9rem;color:#555;">
     © 2025 FreeCoinBase — All rights reserved.

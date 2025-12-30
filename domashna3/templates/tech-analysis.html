@@ -1,14 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
 <html lang="mk">
 <head>
     <meta charset="UTF-8">
-    <title>Sentiment</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crypto Sentiment</title>
-<link rel="stylesheet" href="/static/css/style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Analysis | FreeCoinBase</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <style>
 body { font-family: "Poppins", sans-serif; margin:0; padding:0; background:#fff; color:#111; }
 header.navbar {
@@ -59,9 +57,13 @@ header.navbar nav a:hover {
   height: 18px;
   margin-right: 4px;
 }
-.sentiment-section { padding:8rem 2rem 4rem; max-width:1000px; margin:0 auto; text-align:center; }
-.sentiment-section h1 { font-size:2rem; margin-bottom:1rem; }
+.tech-section { padding:8rem 2rem 4rem; max-width:1000px; margin:0 auto; text-align:center; }
+.tech-section h1 { font-size:2rem; margin-bottom:1rem; }
 canvas { margin-top:2rem; max-width:100%; }
+table { margin-top:2rem; max-width:100%; border-collapse: collapse; width:100%; }
+table th, table td { border:1px solid #ddd; padding:10px; text-align:center; }
+table th { background:#0b592a; color:#fff; }
+table tr:nth-child(even) { background:#f9f9f9; }
 footer { background:#f5f5f5; padding:3rem 1rem; margin-top:3rem; border-top:1px solid #ddd; text-align:center; }
 .footer-logo { font-size:1.6rem; font-weight:700; color:#0b592a; margin-bottom:1rem; }
 .footer-links { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; }
@@ -75,30 +77,41 @@ footer { background:#f5f5f5; padding:3rem 1rem; margin-top:3rem; border-top:1px 
 <header class="navbar">
   <div class="logo">FreeCoinBase</div>
   <nav>
-       <a href="/cryptos">База</a>
+    <a href="/cryptos">База</a>
     <a href="/za-nas">За Нас</a>
     <a href="/grafici">Графици</a>
          <a href="/lstm">LSTM анализа </a>
             <a href="/sentiment" >Sentiment анализа</a>
                 <a href="/on-chain">On-Chain Data</a>
-    <a href="/tech-analysis">Tехничка анализа</a>
+    <a href="/tech-analysis" >Tехничка анализа</a>
                       <a href="/analysis-view">Стратегиска анализа </a>
  <a href="/"><img src="/static/img/home-icon.png" alt="Home" class="home-icon">Почетна</a>
-
   </nav>
 </header>
 
-<section class="sentiment-section">
-  <h1>Sentiment Анализа за Crypto</h1>
-  <p>Преглед на позитивни, негативни и неутрални чувства од крипто-твитови или вести.</p>
+<section class="tech-section">
+  <h1>Technical Analysis за Crypto</h1>
+  <p>Преглед на основни технички индикатори за избраната криптовалута.</p>
 
   <div style="margin-top:2rem;">
       <label for="cryptoSymbol" style="font-weight:500;">Крипто Симбол</label>
       <input type="text" id="cryptoSymbol" placeholder="Внесете BTC, ETH ..." style="padding:8px; width:200px; margin-left:10px;">
-      <button id="fetchSentiment" style="padding:8px 12px; background:#0b592a; color:#fff; border:none; margin-left:10px; cursor:pointer;">Fetch Sentiment</button>
+      <button id="fetchTech" style="padding:8px 12px; background:#0b592a; color:#fff; border:none; margin-left:10px; cursor:pointer;">Fetch Analysis</button>
   </div>
 
-  <canvas id="sentimentChart" width="900" height="400"></canvas>
+  <canvas id="techChart" width="900" height="400"></canvas>
+
+  <table id="techTable">
+      <thead>
+          <tr>
+              <th>Indicator</th>
+              <th>Value</th>
+              <th>Signal</th>
+          </tr>
+      </thead>
+      <tbody>
+      </tbody>
+  </table>
 </section>
 
 <footer>
@@ -114,45 +127,56 @@ footer { background:#f5f5f5; padding:3rem 1rem; margin-top:3rem; border-top:1px 
     <a href="/tech-analysis">Tехничка анализа</a>
                       <a href="/analysis-view">Стратегиска анализа </a>
 
-
-
   </div>
   <p style="margin-top:1rem;font-size:0.9rem;color:#555;">© 2025 FreeCoinBase — All rights reserved.</p>
 </footer>
 
 <script>
-document.getElementById('fetchSentiment').addEventListener('click', () => {
+document.getElementById('fetchTech').addEventListener('click', () => {
     const symbol = document.getElementById('cryptoSymbol').value;
     if (!symbol) return alert('Внесете крипто симбол');
 
-    const sentimentData = {
-        labels: ['Positive', 'Neutral', 'Negative'],
-        values: [Math.random()*100, Math.random()*100, Math.random()*100]
+    const chartData = {
+        labels: ['2025-12-25','2025-12-26','2025-12-27','2025-12-28','2025-12-29'],
+        sma: [50, 52, 51, 53, 54],
+        ema: [51, 51.5, 52, 52.5, 53]
     };
 
-    const ctx = document.getElementById('sentimentChart').getContext('2d');
+    const indicators = [
+        { name: 'SMA', value: 54, signal: 'Buy' },
+        { name: 'EMA', value: 53, signal: 'Buy' },
+        { name: 'RSI', value: 62, signal: 'Neutral' }
+    ];
 
-    if(window.sentimentChartInstance) window.sentimentChartInstance.destroy();
+    const tbody = document.querySelector('#techTable tbody');
+    tbody.innerHTML = '';
+    indicators.forEach(i => {
+        const row = `<tr>
+            <td>${i.name}</td>
+            <td>${i.value}</td>
+            <td>${i.signal}</td>
+        </tr>`;
+        tbody.insertAdjacentHTML('beforeend', row);
+    });
 
-    window.sentimentChartInstance = new Chart(ctx, {
-        type: 'pie',
+    // Update chart
+    const ctx = document.getElementById('techChart').getContext('2d');
+    if(window.techChartInstance) window.techChartInstance.destroy();
+
+    window.techChartInstance = new Chart(ctx, {
+        type: 'line',
         data: {
-            labels: sentimentData.labels,
-            datasets: [{
-                label: 'Sentiment',
-                data: sentimentData.values,
-                backgroundColor: ['#0b592a','#FFCE56','#EF476F']
-            }]
+            labels: chartData.labels,
+            datasets: [
+                { label: 'SMA', data: chartData.sma, borderColor:'#0b592a', fill:false, tension:0.3 },
+                { label: 'EMA', data: chartData.ema, borderColor:'#EF476F', fill:false, tension:0.3 }
+            ]
         },
         options: {
-            responsive: true,
+            responsive:true,
             plugins: {
-                legend: { position: 'top' },
-                title: {
-                    display: true,
-                    text: `Sentiment за ${symbol.toUpperCase()}`,
-                    font: { size: 20 }
-                }
+                legend: { position:'top' },
+                title: { display:true, text:`Technical Analysis за ${symbol.toUpperCase()}`, font:{size:20} }
             }
         }
     });
@@ -160,5 +184,4 @@ document.getElementById('fetchSentiment').addEventListener('click', () => {
 </script>
 
 </body>
-</html>
 </html>

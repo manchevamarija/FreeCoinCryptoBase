@@ -44,45 +44,39 @@ header.navbar {
   position: fixed;
   top: 0;
   width: 100%;
-  background-color: #fff;
-  color: #111;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
- padding: 18px 0px;
+  background: #fff;
   border-bottom: 1px solid #ddd;
   z-index: 1000;
+}
+
+header.navbar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 header.navbar .logo {
   font-weight: 700;
   font-size: 1.4rem;
-  letter-spacing: 0.5px;
   color: #000;
+  white-space: nowrap;
 }
 
 header.navbar nav {
   display: flex;
   align-items: center;
-<<<<<<< HEAD
-  gap: 24px;
-  flex-wrap: wrap;
+  gap: 28px;
 }
 
-
-=======
-  gap: 40px;
-}
-
->>>>>>> 564328ab2e953b32afbb51dbdb330f9566709e13
 header.navbar nav a {
   color: #000;
   text-decoration: none;
   font-weight: 500;
-  transition: color 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  transition: 0.3s;
+  white-space: nowrap;
 }
 
 header.navbar nav a:hover {
@@ -90,11 +84,10 @@ header.navbar nav a:hover {
 }
 
 .home-icon {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  margin-right: 3px;
-}
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}}
 
     </style>
 </head>
@@ -106,18 +99,15 @@ header.navbar nav a:hover {
         <div style="margin-top: 40px;"></div>
 
     <nav>
-        <a href="/cryptos">База</a>
-        <a href="/za-nas">За Нас</a>
-        <a href="/grafici">Графици</a>
-<<<<<<< HEAD
-               <a href="/lstm">LSTM анализа </a>
-                        <a href="/analysis-view">Стратегиска анализа </a>
-
-   <a href="/"><img src="/static/img/home-icon.png" alt="Home" class="home-icon">Почетна</a>
-
-=======
+          <a href="/cryptos">База</a>
+    <a href="/za-nas">За Нас</a>
+    <a href="/grafici">Графици</a>
+         <a href="/lstm">LSTM анализа </a>
+            <a href="/sentiment" >Sentiment анализа</a>
+                <a href="/on-chain" class="active">On-Chain Data</a>
+    <a href="/tech-analysis" class="active">Tехничка анализа</a>
+                      <a href="/analysis-view">Стратегиска анализа </a>
     <a href="/"><img src="/static/img/home-icon.png" alt="Home" class="home-icon">Почетна</a>
->>>>>>> 564328ab2e953b32afbb51dbdb330f9566709e13
     </nav>
 </header>
 
@@ -208,15 +198,15 @@ header.navbar nav a:hover {
   <div class="footer-links">
     <a href="/">Почетна</a>
     <a href="/cryptos">База</a>
-    <a href="/grafici">Графици</a>
     <a href="/za-nas">За Нас</a>
-<<<<<<< HEAD
-            <a href="/lstm">LSTM анализа </a>
+    <a href="/grafici">Графици</a>
+         <a href="/lstm">LSTM анализа </a>
+            <a href="/sentiment" >Sentiment анализа</a>
+                <a href="/on-chain" class="active">On-Chain Data</a>
+    <a href="/tech-analysis" class="active">Tехничка анализа</a>
                       <a href="/analysis-view">Стратегиска анализа </a>
 
 
-=======
->>>>>>> 564328ab2e953b32afbb51dbdb330f9566709e13
   </div>
   <p style="margin-top: 1rem; font-size: 0.9rem; color: #555;">
     © 2025 FreeCoinBase — All rights reserved.
