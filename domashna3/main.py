@@ -8,6 +8,13 @@ import random
 import hashlib
 from datetime import datetime, timedelta
 
+import requests
+
+TECHNICAL_URL = "http://technical:8000/tech-analysis"
+SENTIMENT_URL = "http://sentiment:8000/sentiment"
+LSTM_URL = "http://lstm:8000/lstm"
+
+
 app = FastAPI()
 
 # --------------------
