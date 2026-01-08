@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    container_name: crypto-analysis-app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    restart: unless-stopped

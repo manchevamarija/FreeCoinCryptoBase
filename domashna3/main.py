@@ -1,88 +1,158 @@
-from fastapi import FastAPI, Request
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request, Body
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
 import sqlite3
-import math
-
-from domashna4.strategy_pattern.factory import StrategyFactory
-from domashna4.strategy_pattern.context import AnalysisContext
-
-
+import random
+import hashlib
+from datetime import datetime, timedelta
 
 app = FastAPI()
 
+# --------------------
+# STATIC & TEMPLATES
+# --------------------
 app.mount("/static", StaticFiles(directory="domashna3/static"), name="static")
 templates = Jinja2Templates(directory="domashna3/templates")
 
 DB_PATH = "crypto.db"
 
-SAMPLE_PRICES = [
-    30000, 30100, 30250, 30300, 30400,
-    30500, 30600, 30700, 30800, 30900
-]
+# --------------------
+# HELPERS
+# --------------------
+def get_all_coins(limit=300):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT id, symbol, name
+        FROM coins
+        ORDER BY market_cap_rank
+        LIMIT ?
+    """, (limit,))
+    rows = cur.fetchall()
+    conn.close()
+    return rows
 
 
-
-@app.get("/")
+# --------------------
+# HOME
+# --------------------
+@app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return templates.TemplateResponse(
-        "index.html",
-        {"request": request}
-    )
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
-@app.get("/za-nas")
+@app.get("/za-nas", response_class=HTMLResponse)
 def about(request: Request):
+    return templates.TemplateResponse("about.html", {"request": request})
+
+
+# --------------------
+# API: COINS (for dropdowns)
+# --------------------
+@app.get("/api/coins")
+def api_coins():
+    coins = get_all_coins(300)
+    return [
+        {"id": c[0], "symbol": c[1], "name": c[2]}
+        for c in coins
+    ]
+
+
+# --------------------
+# GRAFICI
+# --------------------
+@app.get("/grafici", response_class=HTMLResponse)
+def grafici(request: Request):
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+
+    cur.execute("""
+        SELECT name, market_cap
+        FROM coins
+        WHERE market_cap IS NOT NULL
+        ORDER BY market_cap DESC
+        LIMIT 10
+    """)
+    top = cur.fetchall()
+
+    cur.execute("""
+        SELECT id, symbol, name, market_cap
+        FROM coins
+        WHERE market_cap IS NOT NULL
+        ORDER BY market_cap_rank
+        LIMIT 100
+    """)
+    all_cryptos = cur.fetchall()
+
+    conn.close()
+
     return templates.TemplateResponse(
-        "about.html",
-        {"request": request}
+        "grafici.html",
+        {
+            "request": request,
+            "names": [r[0] for r in top],
+            "caps": [r[1] for r in top],
+            "all_cryptos": all_cryptos
+        }
     )
-
-
-
-@app.get("/cryptos")
-def show_cryptos(request: Request, filter_id: str = None, page: int = 1):
-    limit = 20
-    offset = (page - 1) * limit
+@app.get("/cryptos", response_class=HTMLResponse)
+def cryptos(
+    request: Request,
+    filter_id: str | None = None,
+    page: int = 1
+):
+    PER_PAGE = 10
+    offset = (page - 1) * PER_PAGE
 
     conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    cur = conn.cursor()
 
-    cursor.execute(
-        "SELECT id, name FROM coins ORDER BY market_cap_rank LIMIT 200"
-    )
-    all_cryptos = cursor.fetchall()
+    # 1️⃣ DROPDOWN LIST (ID + NAME)
+    cur.execute("""
+        SELECT id, name
+        FROM coins
+        ORDER BY market_cap_rank
+        LIMIT 300
+    """)
+    all_cryptos = cur.fetchall()
 
+    # 2️⃣ COUNT (за pagination)
     if filter_id:
-        cursor.execute("""
+        cur.execute(
+            "SELECT COUNT(*) FROM coins WHERE id = ?",
+            (filter_id,)
+        )
+    else:
+        cur.execute("SELECT COUNT(*) FROM coins")
+
+    total = cur.fetchone()[0]
+    total_pages = max(1, (total + PER_PAGE - 1) // PER_PAGE)
+
+    # 3️⃣ MAIN DATA
+    if filter_id:
+        cur.execute("""
             SELECT id, symbol, name, market_cap, market_cap_rank
             FROM coins
             WHERE id = ?
         """, (filter_id,))
-        rows = cursor.fetchall()
-        total_pages = 1
     else:
-        cursor.execute("SELECT COUNT(*) FROM coins")
-        total = cursor.fetchone()[0]
-        total_pages = (total // limit) + (1 if total % limit else 0)
-
-        cursor.execute("""
+        cur.execute("""
             SELECT id, symbol, name, market_cap, market_cap_rank
             FROM coins
             ORDER BY market_cap_rank
             LIMIT ? OFFSET ?
-        """, (limit, offset))
-        rows = cursor.fetchall()
+        """, (PER_PAGE, offset))
 
+    cryptos = cur.fetchall()
     conn.close()
 
     return templates.TemplateResponse(
         "cryptos.html",
         {
             "request": request,
-            "cryptos": rows,
+            "cryptos": cryptos,
             "all_cryptos": all_cryptos,
             "selected": filter_id,
             "page": page,
@@ -91,138 +161,238 @@ def show_cryptos(request: Request, filter_id: str = None, page: int = 1):
     )
 
 
+# --------------------
+# LSTM VIEW
+# --------------------
+@app.get("/lstm", response_class=HTMLResponse)
+def lstm_view(request: Request, coin: str | None = None):
+    coins_raw = get_all_coins()
 
-@app.get("/grafici")
-def show_graphs(request: Request):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+    all_coins = [
+        {"id": c[0], "symbol": c[1], "name": c[2]}
+        for c in coins_raw
+    ]
 
-    cursor.execute("""
-        SELECT name, market_cap
-        FROM coins
-        WHERE market_cap IS NOT NULL
-        ORDER BY market_cap DESC
-        LIMIT 10
-    """)
-    data = cursor.fetchall()
-    conn.close()
-
-    names = [row[0] for row in data]
-    caps = [row[1] for row in data]
-
-    return templates.TemplateResponse(
-        "grafici.html",
-        {
-            "request": request,
-            "names": names,
-            "caps": caps
-        }
+    selected_coin = next(
+        (c for c in all_coins if c["id"] == coin),
+        all_coins[0] if all_coins else None
     )
 
-
-@app.get("/lstm")
-def lstm(request: Request):
     return templates.TemplateResponse(
         "lstm.html",
         {
             "request": request,
-            "dates": ["2025-01-01", "2025-01-02", "2025-01-03"],
-            "true_prices": [30000, 30500, 31000],
-            "predicted_prices": [29950, 30600, 30950],
+            "all_coins": all_coins,
+            "selected_coin": selected_coin
+        }
+    )
+
+
+# --------------------
+# LSTM API (mock but per-coin)
+# --------------------
+@app.post("/lstm/predict")
+def lstm_predict(payload: dict = Body(...)):
+    horizon = int(payload.get("horizon_value", 7))
+    coin_id = payload.get("coin_id", "bitcoin")
+
+    seed = int(hashlib.md5(coin_id.encode()).hexdigest(), 16)
+    rnd = random.Random(seed)
+
+    history_days = 30
+    history_dates = [
+        (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
+        for i in reversed(range(history_days))
+    ]
+
+    prices = [rnd.randint(20000, 50000)]
+    for _ in range(history_days - 1):
+        prices.append(prices[-1] + rnd.randint(-500, 500))
+
+    future_dates = [
+        (datetime.now() + timedelta(days=i)).strftime("%Y-%m-%d")
+        for i in range(1, horizon + 1)
+    ]
+
+    last_price = prices[-1]
+    predictions = []
+    for _ in range(horizon):
+        last_price += rnd.randint(-400, 600)
+        predictions.append(last_price)
+
+    return {
+        "symbol": coin_id,
+        "history_dates": history_dates,
+        "history_prices": prices,
+        "future_dates": future_dates,
+        "predictions": predictions
+    }
+
+
+# --------------------
+# SENTIMENT VIEW
+# --------------------
+@app.get("/sentiment", response_class=HTMLResponse)
+def sentiment_view(request: Request):
+    return templates.TemplateResponse("sentiment.html", {"request": request})
+
+
+# --------------------
+# SENTIMENT API ✅ PER COIN
+# --------------------
+@app.get("/api/sentiment")
+def sentiment_api(coin: str):
+    seed = int(hashlib.md5(coin.upper().encode()).hexdigest(), 16)
+    rnd = random.Random(seed)
+
+    positive = rnd.randint(40, 70)
+    neutral = rnd.randint(10, 30)
+    negative = 100 - positive - neutral
+
+    return {
+        "labels": ["Positive", "Neutral", "Negative"],
+        "values": [positive, neutral, negative]
+    }
+
+
+# --------------------
+# ON-CHAIN VIEW
+# --------------------
+@app.get("/on-chain", response_class=HTMLResponse)
+def onchain_view(request: Request):
+    coins_raw = get_all_coins(300)
+
+    all_cryptos = [
+        {"id": c[0], "symbol": c[1], "name": c[2]}
+        for c in coins_raw
+    ]
+
+    return templates.TemplateResponse(
+        "on-chain.html",
+        {
+            "request": request,
+            "all_cryptos": all_cryptos
         }
     )
 
 
 
-@app.get("/analysis")
-def run_analysis(type: str = "RSI"):
-    strategy = StrategyFactory.create(type)
-    context = AnalysisContext(strategy)
+@app.get("/api/onchain")
+def onchain_api(coin: str):
+    seed = int(hashlib.md5(coin.lower().encode()).hexdigest(), 16)
+    rnd = random.Random(seed)
+
+    opinions = [
+        {
+            "opinion": "Strong network activity detected",
+            "sentiment": "Positive",
+            "source": "Glassnode"
+        },
+        {
+            "opinion": "Transaction volume increasing steadily",
+            "sentiment": "Neutral",
+            "source": "CoinMetrics"
+        },
+        {
+            "opinion": "Fees slightly elevated",
+            "sentiment": "Negative",
+            "source": "CryptoQuant"
+        }
+    ]
+
+    rnd.shuffle(opinions)
+    return opinions
+
+
+
+# --------------------
+# TECH ANALYSIS VIEW
+# --------------------
+
+@app.get("/api/tech")
+def tech_api(coin: str):
+    seed = int(hashlib.md5(coin.lower().encode()).hexdigest(), 16)
+    rnd = random.Random(seed)
+
+    labels = ["D1", "D2", "D3", "D4", "D5"]
+
+    sma = [rnd.randint(40, 60) for _ in range(5)]
+    ema = [rnd.randint(45, 65) for _ in range(5)]
+    rsi = rnd.randint(25, 80)
 
     return {
-        "pattern": "Strategy",
-        "strategy": type,
-        "result": context.execute(SAMPLE_PRICES)
+        "labels": labels,
+        "sma": sma,
+        "ema": ema,
+        "rsi": rsi
     }
 
 
+@app.get("/tech-analysis", response_class=HTMLResponse)
+def tech_analysis(request: Request):
+    coins_raw = get_all_coins(300)
+
+    all_cryptos = [
+        {"id": c[0], "symbol": c[1], "name": c[2]}
+        for c in coins_raw
+    ]
+
+    return templates.TemplateResponse(
+        "tech-analysis.html",
+        {
+            "request": request,
+            "all_cryptos": all_cryptos
+        }
+    )
+
+
+
+# --------------------
+# STRATEGY ANALYSIS
+# --------------------
 def sma_series(prices, window=5):
     out = [None] * len(prices)
     for i in range(window - 1, len(prices)):
-        out[i] = round(sum(prices[i - window + 1:i + 1]) / window, 2)
+        out[i] = sum(prices[i - window + 1:i + 1]) / window
     return out
-
 
 def rsi_series(prices, period=5):
     out = [None] * len(prices)
-
     for i in range(period, len(prices)):
-        gains, losses = 0.0, 0.0
+        gains = losses = 0
         for j in range(i - period + 1, i + 1):
             diff = prices[j] - prices[j - 1]
             if diff > 0:
                 gains += diff
             else:
                 losses += abs(diff)
-
-        if losses == 0:
-            out[i] = 100.0
-        else:
-            rs = gains / losses
-            out[i] = round(100 - (100 / (1 + rs)), 2)
-
+        rs = gains / losses if losses else 0
+        out[i] = 100 - (100 / (1 + rs)) if losses else 100
     return out
-
 
 def ema_series(prices, span):
     out = [None] * len(prices)
     alpha = 2 / (span + 1)
-
     ema = prices[0]
     out[0] = ema
-
     for i in range(1, len(prices)):
         ema = alpha * prices[i] + (1 - alpha) * ema
-        out[i] = round(ema, 6)
-
+        out[i] = ema
     return out
 
-
-def macd_series(prices, fast=12, slow=26, signal=9):
-    ema_fast = ema_series(prices, fast)
-    ema_slow = ema_series(prices, slow)
-
-    macd = [
-        round(ema_fast[i] - ema_slow[i], 6)
-        if ema_fast[i] is not None and ema_slow[i] is not None
-        else None
-        for i in range(len(prices))
-    ]
-
-    signal_line = ema_series(
-        [v if v is not None else 0 for v in macd],
-        signal
-    )
-
-    hist = [
-        round(macd[i] - signal_line[i], 6)
-        if macd[i] is not None and signal_line[i] is not None
-        else None
-        for i in range(len(prices))
-    ]
-
-    return macd, signal_line, hist
-
+def macd_series(prices):
+    ema12 = ema_series(prices, 12)
+    ema26 = ema_series(prices, 26)
+    macd = [ema12[i] - ema26[i] if ema12[i] and ema26[i] else None for i in range(len(prices))]
+    signal = ema_series([m or 0 for m in macd], 9)
+    hist = [(macd[i] - signal[i]) if macd[i] and signal[i] else None for i in range(len(prices))]
+    return macd, signal, hist
 
 
 @app.get("/analysis-view", response_class=HTMLResponse)
 def analysis_view(request: Request):
-    prices = SAMPLE_PRICES
+    prices = [30000, 30200, 30450, 30300, 30500, 30700]
     labels = list(range(1, len(prices) + 1))
-
-    sma5 = sma_series(prices)
-    rsi5 = rsi_series(prices)
-    macd, signal, hist = macd_series(prices)
 
     return templates.TemplateResponse(
         "analysis.html",
@@ -230,37 +400,10 @@ def analysis_view(request: Request):
             "request": request,
             "labels": labels,
             "prices": prices,
-            "sma5": sma5,
-            "rsi5": rsi5,
-            "macd": macd,
-            "signal": signal,
-            "hist": hist,
+            "sma5": sma_series(prices),
+            "rsi5": rsi_series(prices),
+            "macd": macd_series(prices)[0],
+            "signal": macd_series(prices)[1],
+            "hist": macd_series(prices)[2],
         }
-    )
-
-@app.get("/tech-analysis", response_class=HTMLResponse)
-def tech_analysis(request: Request):
-    return templates.TemplateResponse(
-        "tech-analysis.html",
-        {"request": request}
-    )
-
-
-
-
-@app.get("/on-chain", response_class=HTMLResponse)
-def on_chain(request: Request):
-    return templates.TemplateResponse(
-        "on-chain.html",
-        {"request": request}
-    )
-
-
-
-
-@app.get("/sentiment", response_class=HTMLResponse)
-def sentiment(request: Request):
-    return templates.TemplateResponse(
-        "sentiment.html",
-        {"request": request}
     )

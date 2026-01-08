@@ -6,168 +6,54 @@
     <title>Графици | FreeCoinBase</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <style>
-        body {
-            font-family: "Poppins", sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff;
-            color: #111;
-        }
-header.navbar {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #ddd;
-  z-index: 1000;
-}
-
-header.navbar .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 18px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-header.navbar .logo {
-  font-weight: 700;
-  font-size: 1.4rem;
-  color: #000;
-  white-space: nowrap;
-}
-
-header.navbar nav {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-}
-
-header.navbar nav a {
-  color: #000;
-  text-decoration: none;
-  font-weight: 500;
-  transition: 0.3s;
-  white-space: nowrap;
-}
-
-header.navbar nav a:hover {
-  color: #555;
-}
-
-.home-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 4px;
-}
-
-        .charts {
-            padding: 8rem 2rem 4rem;
-            text-align: center;
-        }
-
-        .charts h1 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .highlight {
-            font-size: 1.2rem;
-            color: #0b592a;
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .chart-controls {
-            margin: 1.5rem 0;
-        }
-
-        .chart-controls p {
-            font-size: 1.1rem;
-        }
-
-        .btn {
-            background-color: #0b592a;
-            color: white;
-            border: none;
-            padding: 0.7rem 1.4rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #09491f;
-        }
-
-        canvas {
-            margin-top: 1.5rem;
-            max-width: 900px;
-            width: 100%;
-        }
-
-        footer {
-            background: #f5f5f5;
-            padding: 3rem 1rem;
-            margin-top: 3rem;
-            border-top: 1px solid #ddd;
-            text-align: center;
-        }
-
-        .footer-logo {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: #0b592a;
-            margin-bottom: 1rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a {
-            text-decoration: none;
-            color: #0b592a;
-            font-weight: 500;
-            transition: 0.2s;
-        }
-
-        .footer-links a:hover {
-            color: #063a1b;
-        }
+        body { font-family: "Poppins", sans-serif; margin: 0; padding: 0; background-color: #ffffff; color: #111; }
+        header.navbar { position: fixed; top: 0; width: 100%; background-color: #fff; display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid #ddd; z-index: 1000; }
+        header.navbar .logo { font-weight: 700; font-size: 1.4rem; color: #000; }
+        header.navbar nav { display: flex; align-items: center; gap: 40px; }
+        header.navbar nav a { color: #000; text-decoration: none; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+        header.navbar nav a:hover { color: #555; }
+        .home-icon { width: 20px; height: 20px; margin-right: 3px; }
+        .charts { padding: 8rem 2rem 4rem; text-align: center; }
+        .charts h1 { font-size: 2rem; margin-bottom: 1rem; }
+        .highlight { font-size: 1.2rem; color: #0b592a; font-weight: 600; margin-bottom: 1rem; }
+        .chart-controls { margin: 1.5rem 0; }
+        .chart-controls p { font-size: 1.1rem; }
+        .btn { background-color: #0b592a; color: white; border: none; padding: 0.7rem 1.4rem; border-radius: 6px; cursor: pointer; font-weight: 500; transition: 0.3s; }
+        .btn:hover { background-color: #09491f; }
+        canvas { margin-top: 1.5rem; max-width: 900px; width: 100%; }
+        table { margin: auto; border-collapse: collapse; margin-top: 1rem; }
+        table, th, td { border: 1px solid #ddd; }
+        th, td { padding: 10px; text-align: center; }
+        footer { background: #f5f5f5; padding: 3rem 1rem; margin-top: 3rem; border-top: 1px solid #ddd; text-align: center; }
+        .footer-logo { font-size: 1.6rem; font-weight: 700; color: #0b592a; margin-bottom: 1rem; }
+        .footer-links { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+        .footer-links a { text-decoration: none; color: #0b592a; font-weight: 500; transition: 0.2s; }
+        .footer-links a:hover { color: #063a1b; }
+        select, input[type="number"], input[type="text"] { padding: 0.5rem; }
     </style>
 </head>
 
 <body>
 
 <header class="navbar">
+  <div class="logo">FreeCoinBase</div>
+  <nav>
+<a href="/">Почетна</a>
+<a href="/cryptos">База</a>
+<a href="/grafici">Графици</a>
+<a href="/lstm">LSTM анализа</a>
+<a href="/sentiment">Сентимент анализа</a>
+<a href="/on-chain">On-chain data</a>
+<a href="/tech-analysis">Техничка анализа</a>
+<a href="/analysis-view">Стратегиска анализа</a>
+<a href="/za-nas">За Нас</a>
 
-    <div class="logo">FreeCoinBase</div>
-        <div style="margin-top: 40px;"></div>
-
-    <nav>
-          <a href="/cryptos">База</a>
-    <a href="/za-nas">За Нас</a>
-    <a href="/grafici">Графици</a>
-         <a href="/lstm">LSTM анализа </a>
-            <a href="/sentiment" >Sentiment анализа</a>
-                <a href="/on-chain" class="active">On-Chain Data</a>
-    <a href="/tech-analysis" class="active">Tехничка анализа</a>
-                      <a href="/analysis-view">Стратегиска анализа </a>
-    <a href="/"><img src="/static/img/home-icon.png" alt="Home" class="home-icon">Почетна</a>
-    </nav>
+  </nav>
 </header>
 
-
 <section class="charts">
-    <h1>Топ 10 Криптовалути по Market Cap</h1>
+    <h1>Топ криптовалути по Market Cap</h1>
     <p id="topCoin" class="highlight"></p>
 
     <div class="chart-controls">
@@ -176,102 +62,172 @@ header.navbar nav a:hover {
     </div>
 
     <canvas id="cryptoChart" width="900" height="400"></canvas>
+
+    <!-- Coin search/add -->
+    <div class="chart-controls" style="margin-top: 2rem;">
+        <h2>Додади криптовалути од базата</h2>
+        <div style="margin-bottom: 1rem;">
+            <input type="text" id="coinSearch" placeholder="Пребарај крипто..." list="coinsList" style="width:220px; padding:0.5rem;">
+            <datalist id="coinsList"></datalist>
+            <button id="addCoinBtn" class="btn">Додади крипто</button>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Избери</th>
+                    <th>Име</th>
+                    <th>Симбол</th>
+                    <th>Market Cap</th>
+                    <th>Акција</th>
+                </tr>
+            </thead>
+            <tbody id="cryptoTable">
+                {% for coin in all_cryptos %}
+                <tr>
+                    <td><input type="checkbox" class="coin-checkbox" data-name="{{ coin[2] }}" data-cap="{{ coin[3] }}" checked></td>
+                    <td>{{ coin[2] }}</td>
+                    <td>{{ coin[1] }}</td>
+                    <td>{{ "{:,.0f}".format(coin[3]) }}</td>
+                    <td><button class="remove-btn btn">Избриши</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div style="margin-top:1rem;">
+            <button id="updateTableChart" class="btn">Ажурирај график</button>
+        </div>
+    </div>
 </section>
 
-<footer>
-  <div class="footer-logo">FreeCoinBase</div>
-  <div class="footer-links">
-    <a href="/">Почетна</a>
-    <a href="/cryptos">База</a>
-    <a href="/za-nas">За Нас</a>
-    <a href="/grafici">Графици</a>
-         <a href="/lstm">LSTM анализа </a>
-            <a href="/sentiment" >Sentiment анализа</a>
-                <a href="/on-chain" class="active">On-Chain Data</a>
-    <a href="/tech-analysis" class="active">Tехничка анализа</a>
-                      <a href="/analysis-view">Стратегиска анализа </a>
-
-  </div>
-  <p style="margin-top: 1rem; font-size: 0.9rem; color: #555;">
-    © 2025 FreeCoinBase — All rights reserved.
-  </p>
-</footer>
-
 <script>
-    const names = {{ names | tojson }};
-    const caps = {{ caps | tojson }};
+let allCoins = []; // loaded from DB
 
-    let maxIndex = caps.indexOf(Math.max(...caps));
-    let topName = names[maxIndex];
-    let topCap = caps[maxIndex].toLocaleString();
+// Fetch coins from backend
+fetch("/api/coins")
+    .then(res => res.json())
+    .then(data => {
+        allCoins = data;
+        const datalist = document.getElementById("coinsList");
+        allCoins.forEach(c => {
+            const option = document.createElement("option");
+            option.value = c.name;
+            option.textContent = `${c.name} (${c.symbol})`;
+            datalist.appendChild(option);
+        });
+    });
 
-    document.getElementById("topCoin").innerHTML =
-        `<strong>Највредна криптовалута:</strong> ${topName} (${topCap} USD)`;
+let currentType = 'bar';
 
-    const total = caps.reduce((a, b) => a + b, 0);
-    document.getElementById("totalCap").textContent = total.toLocaleString();
-
-    let currentType = 'bar';
-    const ctx = document.getElementById('cryptoChart').getContext('2d');
-
-    const chart = new Chart(ctx, {
-        type: currentType,
-        data: {
-            labels: names,
-            datasets: [{
-                label: 'Market Cap (USD)',
-                data: caps,
-                backgroundColor: [
-                    '#0A572E', '#1B8A47', '#26A65B', '#55D187', '#8BE6B4',
-                    '#FFD166', '#EF476F', '#118AB2', '#073B4C', '#06D6A0'
-                ],
-                borderColor: '#fff',
-                borderWidth: 2,
-                borderRadius: 8,
-            }]
-        },
-        options: {
-            responsive: true,
-            animation: {
-                duration: 2000,
-                easing: 'easeOutElastic'
-            },
-            plugins: {
-                legend: { display: true, position: 'top' },
-                title: {
-                    display: true,
-                    text: 'Највредни криптовалути',
-                    font: { size: 20 }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            let value = context.raw;
-                            let percent = ((value / total) * 100).toFixed(2);
-                            return `${context.label}: $${value.toLocaleString()} (${percent}%)`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        callback: value => value / 1e9 + 'B $'
+// Initial chart data from template
+const allCaps = {{ caps | tojson }};
+const allNames = {{ names | tojson }};
+const ctx = document.getElementById('cryptoChart').getContext('2d');
+const chart = new Chart(ctx, {
+    type: currentType,
+    data: {
+        labels: allNames,
+        datasets: [{
+            label: 'Market Cap (USD)',
+            data: allCaps,
+            backgroundColor: ['#0A572E','#1B8A47','#26A65B','#55D187','#8BE6B4','#FFD166','#EF476F','#118AB2','#073B4C','#06D6A0'],
+            borderColor: '#fff',
+            borderWidth: 2,
+            borderRadius: 8,
+        }]
+    },
+    options: {
+        responsive:true,
+        plugins: {
+            legend:{display:true, position:'top'},
+            title:{display:true, text:'Највредни криптовалути', font:{size:20}},
+            tooltip:{
+                callbacks:{
+                    label:function(context){
+                        let value = context.raw;
+                        let total = chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
+                        let percent = ((value/total)*100).toFixed(2);
+                        return `${context.label}: $${value.toLocaleString()} (${percent}%)`;
                     }
                 }
             }
         }
-    });
+    }
+});
 
-    document.getElementById("toggleType").onclick = () => {
-        if (currentType === 'bar') currentType = 'line';
-        else if (currentType === 'line') currentType = 'pie';
-        else currentType = 'bar';
-        chart.config.type = currentType;
-        chart.update();
-    };
+// Toggle chart type
+document.getElementById("toggleType").onclick = () => {
+    currentType = currentType==='bar'?'line':currentType==='line'?'pie':'bar';
+    chart.config.type = currentType;
+    chart.update();
+};
+
+// Update chart from table
+document.getElementById("updateTableChart").onclick = () => {
+    const selected = Array.from(document.querySelectorAll(".coin-checkbox:checked"));
+    if(selected.length === 0){ alert("Изберете барем една криптовалута!"); return; }
+    chart.data.labels = selected.map(c => c.dataset.name);
+    chart.data.datasets[0].data = selected.map(c => Number(c.dataset.cap));
+    chart.update();
+};
+
+// Add coin from search
+document.getElementById("addCoinBtn").onclick = () => {
+    const input = document.getElementById("coinSearch").value.trim().toLowerCase();
+    if(!input){ alert("Внеси валидна криптовалута!"); return; }
+
+    const coin = allCoins.find(c => c.name.toLowerCase() === input);
+    if(!coin){ alert("Не постои таква криптовалута во базата!"); return; }
+
+    const tbody = document.getElementById("cryptoTable");
+
+    // prevent duplicates
+    if(Array.from(tbody.querySelectorAll("tr td:nth-child(2)"))
+        .some(td => td.textContent.toLowerCase() === coin.name.toLowerCase())){
+        alert("Криптовалутата веќе е во табелата!");
+        return;
+    }
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+        <td><input type="checkbox" class="coin-checkbox" data-name="${coin.name}" data-cap="${coin.cap}" checked></td>
+        <td>${coin.name}</td>
+        <td>${coin.symbol}</td>
+        <td>${coin.cap.toLocaleString()}</td>
+        <td><button class="remove-btn btn">Избриши</button></td>
+    `;
+    tbody.appendChild(row);
+    row.querySelector(".remove-btn").onclick = () => row.remove();
+    document.getElementById("coinSearch").value = '';
+};
+
+// Existing remove buttons
+document.querySelectorAll(".remove-btn").forEach(btn=>{
+    btn.onclick = e => e.target.closest("tr").remove();
+});
+
+// Top coin & total
+const total = allCaps.reduce((a,b)=>a+b,0);
+let maxIndex = allCaps.indexOf(Math.max(...allCaps));
+document.getElementById("topCoin").innerHTML = `<strong>Највредна криптовалута:</strong> ${allNames[maxIndex]} (${allCaps[maxIndex].toLocaleString()} USD)`;
+document.getElementById("totalCap").textContent = total.toLocaleString();
 </script>
 
+<footer>
+    <div class="footer-logo">FreeCoinBase</div>
+    <div class="footer-links">
+        <a href="/domashna3/static">Почетна</a>
+        <a href="/cryptos">База</a>
+        <a href="/grafici">Графици</a>
+        <a href="/lstm">LSTM анализа</a>
+        <a href="/sentiment">Сентимент анализа</a>
+        <a href="/on-chain">On-chain data</a>
+        <a href="/tech-analysis">Техничка анализа</a>
+<a href="/analysis-view">Стратегиска анализа</a>
+        <a href="/za-nas">За Нас</a>
+    </div>
+    <p style="margin-top:1rem; font-size:0.9rem; color:#555;">© 2025 FreeCoinBase — All rights reserved.</p>
+</footer>
 </body>
 </html>

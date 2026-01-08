@@ -210,15 +210,16 @@ header.navbar nav a:hover {
         <div style="margin-top: 40px;"></div>
 
     <nav>
-    <a href="/cryptos">База</a>
-    <a href="/za-nas">За Нас</a>
-    <a href="/grafici">Графици</a>
-         <a href="/lstm">LSTM анализа </a>
-            <a href="/sentiment" >Sentiment анализа</a>
-                <a href="/on-chain" class="active">On-Chain Data</a>
-    <a href="/tech-analysis" class="active">Tехничка анализа</a>
-                      <a href="/analysis-view">Стратегиска анализа </a>
-    <a href="/"><img src="/static/img/home-icon.png" alt="Home" class="home-icon">Почетна</a>
+    <div class="footer-links">
+      <a href="/domashna3/static">Почетна</a>
+      <a href="/cryptos">База</a>
+      <a href="/grafici">Графици</a>
+      <a href="/lstm">LSTM анализа </a>
+      <a href="/sentiment">Сентимент анализа</a>
+      <a href="/on-chain">On-chain data</a>
+      <a href="/tech-analysis">Техничка анализа</a>
+<a href="/analysis-view">Стратегиска анализа</a>
+      <a href="/za-nas">За Нас</a>
     </nav>
 </header>
 
@@ -256,7 +257,11 @@ header.navbar nav a:hover {
             <tr>
                 <td>{{ id }}</td>
                 <td>{{ symbol }}</td>
-                <td>{{ name }}</td>
+               <td>
+    <a href="/tech-analysis?coin={{ id }}" style="color:#0b592a; font-weight:600;">
+        {{ name }}
+    </a>
+</td>
                 <td>{{ "{:,.0f}".format(market_cap) }}</td>
                 <td>{{ market_cap_rank }}</td>
             </tr>
@@ -278,17 +283,17 @@ header.navbar nav a:hover {
 </section>
 
 <footer>
-  <div class="footer-logo">FreeCoinBase</div>
-  <div class="footer-links">
-    <a href="/">Почетна</a>
-    <a href="/cryptos">База</a>
-    <a href="/za-nas">За Нас</a>
-    <a href="/grafici">Графици</a>
-         <a href="/lstm">LSTM анализа </a>
-            <a href="/sentiment" >Sentiment анализа</a>
-                <a href="/on-chain" class="active">On-Chain Data</a>
-    <a href="/tech-analysis" class="active">Tехничка анализа</a>
-                      <a href="/analysis-view">Стратегиска анализа </a>
+<div class="footer-logo">FreeCoinBase</div>
+    <div class="footer-links">
+      <a href="/domashna3/static">Почетна</a>
+      <a href="/cryptos">База</a>
+      <a href="/grafici">Графици</a>
+      <a href="/lstm">LSTM анализа </a>
+      <a href="/sentiment">Сентимент анализа</a>
+      <a href="/on-chain">On-chain data</a>
+      <a href="/tech-analysis">Техничка анализа</a>
+<a href="/analysis-view">Стратегиска анализа</a>
+      <a href="/za-nas">За Нас</a>
 
 
 

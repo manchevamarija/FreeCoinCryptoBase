@@ -1,185 +1,248 @@
 <!DOCTYPE html>
 <html lang="mk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Technical Analysis | FreeCoinBase</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Analysis | FreeCoinBase</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
-body { font-family: "Poppins", sans-serif; margin:0; padding:0; background:#fff; color:#111; }
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  background: #fff;
+  color: #111;
+}
+
+/* NAVBAR */
 header.navbar {
   position: fixed;
   top: 0;
   width: 100%;
   background: #fff;
+  padding: 18px 2rem;
   border-bottom: 1px solid #ddd;
   z-index: 1000;
-}
-
-header.navbar .container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 18px 24px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 header.navbar .logo {
   font-weight: 700;
   font-size: 1.4rem;
-  color: #000;
-  white-space: nowrap;
 }
 
 header.navbar nav {
   display: flex;
-  align-items: center;
   gap: 28px;
 }
 
 header.navbar nav a {
-  color: #000;
   text-decoration: none;
+  color: #000;
   font-weight: 500;
-  transition: 0.3s;
-  white-space: nowrap;
 }
 
 header.navbar nav a:hover {
   color: #555;
 }
 
-.home-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 4px;
+/* MAIN */
+main {
+  padding: 8rem 2rem 4rem;
+  max-width: 1100px;
+  margin: auto;
+  text-align: center;
 }
-.tech-section { padding:8rem 2rem 4rem; max-width:1000px; margin:0 auto; text-align:center; }
-.tech-section h1 { font-size:2rem; margin-bottom:1rem; }
-canvas { margin-top:2rem; max-width:100%; }
-table { margin-top:2rem; max-width:100%; border-collapse: collapse; width:100%; }
-table th, table td { border:1px solid #ddd; padding:10px; text-align:center; }
-table th { background:#0b592a; color:#fff; }
-table tr:nth-child(even) { background:#f9f9f9; }
-footer { background:#f5f5f5; padding:3rem 1rem; margin-top:3rem; border-top:1px solid #ddd; text-align:center; }
-.footer-logo { font-size:1.6rem; font-weight:700; color:#0b592a; margin-bottom:1rem; }
-.footer-links { display:flex; justify-content:center; gap:2rem; flex-wrap:wrap; }
-.footer-links a { text-decoration:none; color:#0b592a; font-weight:500; transition:0.2s; }
-.footer-links a:hover { color:#063a1b; }
-</style>
 
+.controls {
+  margin-top: 2rem;
+}
+
+select, button {
+  padding: 8px 12px;
+  margin: 0 6px;
+  border-radius: 6px;
+}
+
+button {
+  background: #0b592a;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #063a1b;
+}
+
+.chart-box {
+  margin-top: 2.5rem;
+  height: 320px;
+}
+
+/* TABLE */
+table {
+  margin-top: 2.5rem;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background: #0b592a;
+  color: #fff;
+}
+
+tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+/* FOOTER */
+footer {
+  background: #f5f5f5;
+  padding: 3rem 1rem;
+  margin-top: 3rem;
+  border-top: 1px solid #ddd;
+  text-align: center;
+}
+
+.footer-logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #0b592a;
+  margin-bottom: 1rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  text-decoration: none;
+  color: #0b592a;
+  font-weight: 500;
+}
+
+.footer-links a:hover {
+  color: #063a1b;
+}
+</style>
 </head>
+
 <body>
 
+<!-- NAVBAR -->
 <header class="navbar">
   <div class="logo">FreeCoinBase</div>
   <nav>
+    <a href="/">Почетна</a>
     <a href="/cryptos">База</a>
-    <a href="/za-nas">За Нас</a>
     <a href="/grafici">Графици</a>
-         <a href="/lstm">LSTM анализа </a>
-            <a href="/sentiment" >Sentiment анализа</a>
-                <a href="/on-chain">On-Chain Data</a>
-    <a href="/tech-analysis" >Tехничка анализа</a>
-                      <a href="/analysis-view">Стратегиска анализа </a>
- <a href="/"><img src="/static/img/home-icon.png" alt="Home" class="home-icon">Почетна</a>
+    <a href="/lstm">LSTM анализа</a>
+    <a href="/sentiment">Сентимент анализа</a>
+    <a href="/on-chain">On-chain data</a>
+    <a href="/tech-analysis">Техничка анализа</a>
+    <a href="/analysis-view">Стратегиска анализа</a>
+    <a href="/za-nas">За Нас</a>
   </nav>
 </header>
 
-<section class="tech-section">
+<!-- MAIN -->
+<main>
   <h1>Technical Analysis за Crypto</h1>
-  <p>Преглед на основни технички индикатори за избраната криптовалута.</p>
+  <p>Основни технички индикатори за избрана криптовалута</p>
 
-  <div style="margin-top:2rem;">
-      <label for="cryptoSymbol" style="font-weight:500;">Крипто Симбол</label>
-      <input type="text" id="cryptoSymbol" placeholder="Внесете BTC, ETH ..." style="padding:8px; width:200px; margin-left:10px;">
-      <button id="fetchTech" style="padding:8px 12px; background:#0b592a; color:#fff; border:none; margin-left:10px; cursor:pointer;">Fetch Analysis</button>
+  <div class="controls">
+    <select id="coinSelect">
+      <option value="">-- одбери монета --</option>
+      {% for c in all_cryptos %}
+        <option value="{{ c.symbol }}">{{ c.name }} ({{ c.symbol }})</option>
+      {% endfor %}
+    </select>
+    <button id="fetchTech">Fetch Analysis</button>
   </div>
 
-  <canvas id="techChart" width="900" height="400"></canvas>
+  <div class="chart-box">
+    <canvas id="techChart"></canvas>
+  </div>
 
-  <table id="techTable">
-      <thead>
-          <tr>
-              <th>Indicator</th>
-              <th>Value</th>
-              <th>Signal</th>
-          </tr>
-      </thead>
-      <tbody>
-      </tbody>
+  <table>
+    <thead>
+      <tr>
+        <th>Indicator</th>
+        <th>Value</th>
+        <th>Signal</th>
+      </tr>
+    </thead>
+    <tbody id="techTable"></tbody>
   </table>
-</section>
+</main>
 
+<!-- FOOTER -->
 <footer>
   <div class="footer-logo">FreeCoinBase</div>
   <div class="footer-links">
-  <a href="/">Почетна</a>
+    <a href="/">Почетна</a>
     <a href="/cryptos">База</a>
-    <a href="/za-nas">За Нас</a>
     <a href="/grafici">Графици</a>
-         <a href="/lstm">LSTM анализа </a>
-            <a href="/sentiment" >Sentiment анализа</a>
-                <a href="/on-chain">On-Chain Data</a>
-    <a href="/tech-analysis">Tехничка анализа</a>
-                      <a href="/analysis-view">Стратегиска анализа </a>
-
+    <a href="/lstm">LSTM анализа</a>
+    <a href="/sentiment">Сентимент анализа</a>
+    <a href="/on-chain">On-chain data</a>
+    <a href="/tech-analysis">Техничка анализа</a>
+    <a href="/analysis-view">Стратегиска анализа</a>
+    <a href="/za-nas">За Нас</a>
   </div>
-  <p style="margin-top:1rem;font-size:0.9rem;color:#555;">© 2025 FreeCoinBase — All rights reserved.</p>
+  <p style="margin-top:1rem;font-size:0.9rem;color:#555;">
+    © 2025 FreeCoinBase — All rights reserved.
+  </p>
 </footer>
 
 <script>
-document.getElementById('fetchTech').addEventListener('click', () => {
-    const symbol = document.getElementById('cryptoSymbol').value;
-    if (!symbol) return alert('Внесете крипто симбол');
+document.getElementById("fetchTech").addEventListener("click", async () => {
+  const coin = document.getElementById("coinSelect").value;
+  if (!coin) return alert("Одбери монета");
 
-    const chartData = {
-        labels: ['2025-12-25','2025-12-26','2025-12-27','2025-12-28','2025-12-29'],
-        sma: [50, 52, 51, 53, 54],
-        ema: [51, 51.5, 52, 52.5, 53]
-    };
+  const res = await fetch(`/api/tech?coin=${coin}`);
+  const data = await res.json();
 
-    const indicators = [
-        { name: 'SMA', value: 54, signal: 'Buy' },
-        { name: 'EMA', value: 53, signal: 'Buy' },
-        { name: 'RSI', value: 62, signal: 'Neutral' }
-    ];
+  const lastSMA = data.sma.at(-1);
+  const lastEMA = data.ema.at(-1);
 
-    const tbody = document.querySelector('#techTable tbody');
-    tbody.innerHTML = '';
-    indicators.forEach(i => {
-        const row = `<tr>
-            <td>${i.name}</td>
-            <td>${i.value}</td>
-            <td>${i.signal}</td>
-        </tr>`;
-        tbody.insertAdjacentHTML('beforeend', row);
-    });
+  document.getElementById("techTable").innerHTML = `
+    <tr><td>SMA</td><td>${lastSMA}</td><td>${lastSMA > lastEMA ? "Buy" : "Sell"}</td></tr>
+    <tr><td>EMA</td><td>${lastEMA}</td><td>${lastEMA > lastSMA ? "Buy" : "Sell"}</td></tr>
+    <tr><td>RSI</td><td>${data.rsi}</td><td>${data.rsi > 70 ? "Sell" : data.rsi < 30 ? "Buy" : "Neutral"}</td></tr>
+  `;
 
-    // Update chart
-    const ctx = document.getElementById('techChart').getContext('2d');
-    if(window.techChartInstance) window.techChartInstance.destroy();
+  const ctx = document.getElementById("techChart").getContext("2d");
+  if (window.chart) window.chart.destroy();
 
-    window.techChartInstance = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: chartData.labels,
-            datasets: [
-                { label: 'SMA', data: chartData.sma, borderColor:'#0b592a', fill:false, tension:0.3 },
-                { label: 'EMA', data: chartData.ema, borderColor:'#EF476F', fill:false, tension:0.3 }
-            ]
-        },
-        options: {
-            responsive:true,
-            plugins: {
-                legend: { position:'top' },
-                title: { display:true, text:`Technical Analysis за ${symbol.toUpperCase()}`, font:{size:20} }
-            }
-        }
-    });
+  window.chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: data.labels,
+      datasets: [
+        { label: "SMA", data: data.sma, borderColor: "#0b592a", tension: 0.3 },
+        { label: "EMA", data: data.ema, borderColor: "#EF476F", tension: 0.3 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
 });
 </script>
 

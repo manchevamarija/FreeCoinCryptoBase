@@ -8,11 +8,7 @@ import pandas as pd
 import yfinance as yf
 import ta
 
-
-
 Timeframe = Literal["1D", "1W", "1M"]
-
-
 
 def resample_ohlcv(df: pd.DataFrame, rule: str) -> pd.DataFrame:
     if isinstance(df.columns, pd.MultiIndex):
