@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  web:
+    build: .
+    container_name: web-app
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    depends_on:
+      - technical
+      - sentiment
+      - lstm
+      - onchain
+
+  technical:
+    build: ./technical
+    container_name: technical-service
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
+
+  sentiment:
+    build: ./sentiment
+    container_name: sentiment-service
+    ports:
+      - "8002:8000"
+    restart: unless-stopped
+
+  lstm:
+    build: ./lstm
+    container_name: lstm-service
+    ports:
+      - "8003:8000"
+    restart: unless-stopped
+
+  onchain:
+    build: ./onchain
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8004:8000"
