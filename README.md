@@ -26,7 +26,6 @@ The goal of the project is to demonstrate practical usage of **data aggregation,
 - SMA, EMA
 - RSI
 - MACD
-- Bollinger Bands
 
 ###  On-Chain Analytics
 - Wallet inflow and outflow analysis
