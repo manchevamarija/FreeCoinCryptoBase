@@ -8,4 +8,4 @@ class CryptoSchema(BaseModel):
     market_cap_rank: int
 
     class Config:
-        from_attributes = True  # For FastAPI v2
+        from_attributes = True  
