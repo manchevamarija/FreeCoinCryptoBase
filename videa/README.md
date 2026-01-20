@@ -1,1 +1,0 @@
-screen recordings od proektot
