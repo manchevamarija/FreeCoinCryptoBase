@@ -3,7 +3,6 @@ import pandas as pd
 from pytrends.request import TrendReq
 from transformers import pipeline
 
-# sentiment model
 sentiment_model = pipeline(
     "sentiment-analysis",
     model="distilbert-base-uncased-finetuned-sst-2-english",
