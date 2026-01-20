@@ -18,16 +18,13 @@ def run_lstm_prediction(prices, dates, horizon_value=7, horizon_type="days"):
     # Convert prices to array
     prices = np.array(prices).reshape(-1, 1)
 
-    # Scale
     scaler = MinMaxScaler()
     scaled_prices = scaler.fit_transform(prices)
 
-    # Prepare LSTM data
     window = 60
     X, y = prepare_data(scaled_prices, window)
     X = X.reshape((X.shape[0], X.shape[1], 1))
 
-    # Build LSTM model
     model = Sequential([
         LSTM(50, return_sequences=True, input_shape=(X.shape[1], 1)),
         LSTM(50),
@@ -36,7 +33,6 @@ def run_lstm_prediction(prices, dates, horizon_value=7, horizon_type="days"):
     model.compile(optimizer="adam", loss="mse")
     model.fit(X, y, epochs=5, batch_size=32, verbose=0)
 
-    # Predict future
     last_window = scaled_prices[-window:].reshape(1, window, 1)
     future_preds = []
     for _ in range(horizon_value):
@@ -45,7 +41,6 @@ def run_lstm_prediction(prices, dates, horizon_value=7, horizon_type="days"):
         future_preds.append(float(future_pred))
         last_window = np.append(last_window[:, 1:, :], pred_scaled.reshape(1, 1, 1), axis=1)
 
-    # Generate future dates
     last_date = datetime.strptime(dates[-1], "%Y-%m-%d")
     future_dates = []
     for i in range(1, horizon_value + 1):
