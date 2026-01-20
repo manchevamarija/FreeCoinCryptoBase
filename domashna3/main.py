@@ -17,17 +17,12 @@ LSTM_URL = "http://lstm:8000/lstm"
 
 app = FastAPI()
 
-# --------------------
-# STATIC & TEMPLATES
-# --------------------
 app.mount("/static", StaticFiles(directory="domashna3/static"), name="static")
 templates = Jinja2Templates(directory="domashna3/templates")
 
 DB_PATH = "crypto.db"
 
-# --------------------
-# HELPERS
-# --------------------
+
 def get_all_coins(limit=300):
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -42,9 +37,7 @@ def get_all_coins(limit=300):
     return rows
 
 
-# --------------------
-# HOME
-# --------------------
+
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -55,9 +48,7 @@ def about(request: Request):
     return templates.TemplateResponse("about.html", {"request": request})
 
 
-# --------------------
-# API: COINS (for dropdowns)
-# --------------------
+
 @app.get("/api/coins")
 def api_coins():
     coins = get_all_coins(300)
@@ -67,9 +58,7 @@ def api_coins():
     ]
 
 
-# --------------------
-# GRAFICI
-# --------------------
+
 @app.get("/grafici", response_class=HTMLResponse)
 def grafici(request: Request):
     conn = sqlite3.connect(DB_PATH)
@@ -116,7 +105,6 @@ def cryptos(
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
 
-    # 1️⃣ DROPDOWN LIST (ID + NAME)
     cur.execute("""
         SELECT id, name
         FROM coins
@@ -125,7 +113,6 @@ def cryptos(
     """)
     all_cryptos = cur.fetchall()
 
-    # 2️⃣ COUNT (за pagination)
     if filter_id:
         cur.execute(
             "SELECT COUNT(*) FROM coins WHERE id = ?",
@@ -137,7 +124,6 @@ def cryptos(
     total = cur.fetchone()[0]
     total_pages = max(1, (total + PER_PAGE - 1) // PER_PAGE)
 
-    # 3️⃣ MAIN DATA
     if filter_id:
         cur.execute("""
             SELECT id, symbol, name, market_cap, market_cap_rank
@@ -168,9 +154,7 @@ def cryptos(
     )
 
 
-# --------------------
-# LSTM VIEW
-# --------------------
+
 @app.get("/lstm", response_class=HTMLResponse)
 def lstm_view(request: Request, coin: str | None = None):
     coins_raw = get_all_coins()
@@ -195,9 +179,7 @@ def lstm_view(request: Request, coin: str | None = None):
     )
 
 
-# --------------------
-# LSTM API (mock but per-coin)
-# --------------------
+
 @app.post("/lstm/predict")
 def lstm_predict(payload: dict = Body(...)):
     horizon = int(payload.get("horizon_value", 7))
@@ -236,17 +218,13 @@ def lstm_predict(payload: dict = Body(...)):
     }
 
 
-# --------------------
-# SENTIMENT VIEW
-# --------------------
+
 @app.get("/sentiment", response_class=HTMLResponse)
 def sentiment_view(request: Request):
     return templates.TemplateResponse("sentiment.html", {"request": request})
 
 
-# --------------------
-# SENTIMENT API ✅ PER COIN
-# --------------------
+
 @app.get("/api/sentiment")
 def sentiment_api(coin: str):
     seed = int(hashlib.md5(coin.upper().encode()).hexdigest(), 16)
@@ -262,9 +240,7 @@ def sentiment_api(coin: str):
     }
 
 
-# --------------------
-# ON-CHAIN VIEW
-# --------------------
+
 @app.get("/on-chain", response_class=HTMLResponse)
 def onchain_view(request: Request):
     coins_raw = get_all_coins(300)
@@ -312,9 +288,6 @@ def onchain_api(coin: str):
 
 
 
-# --------------------
-# TECH ANALYSIS VIEW
-# --------------------
 
 @app.get("/api/tech")
 def tech_api(coin: str):
@@ -354,9 +327,6 @@ def tech_analysis(request: Request):
 
 
 
-# --------------------
-# STRATEGY ANALYSIS
-# --------------------
 def sma_series(prices, window=5):
     out = [None] * len(prices)
     for i in range(window - 1, len(prices)):
