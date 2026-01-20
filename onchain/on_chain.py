@@ -1,7 +1,6 @@
 import requests
 import pandas as pd
 
-# Helper: safe GET with JSON
 def safe_get(url):
     try:
         r = requests.get(url, timeout=10)
