@@ -53,6 +53,11 @@ The goal of the project is to demonstrate practical usage of **data aggregation,
 - Analysis microservices (technical & on-chain)
 - ML service for LSTM forecasting
 - Web/API layer for visualization and access
+  
+The diagram below illustrates the overall architecture of the Crypto Analytics Platform, including data collection services, analysis pipelines, machine learning components, and API layers.
+
+![System Architecture Diagram](domashna2/architecture/diagrams/dija.png)
+
 
 Each component is containerized and orchestrated using **Docker Compose**.
 
